@@ -1,0 +1,17 @@
+{
+  "name": "คู่มือการปฏิบัติงาน วิทยาลัยอาชีวศึกษาร้อยเอ็ด",
+  "short_name": "คู่มือปฏิบัติงาน",
+  "description": "ระบบคู่มือการปฏิบัติงาน วิทยาลัยอาชีวศึกษาร้อยเอ็ด — ค้นหาขั้นตอนการปฏิบัติงานได้ทุกอุปกรณ์",
+  "lang": "th",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f1ec",
+  "theme_color": "#4c2a86",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
