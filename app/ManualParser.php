@@ -98,6 +98,13 @@ final class ManualParser
      */
     public static function normalize(string $s): string
     {
+        // A damaged upload (truncated file, byte-mangling FTP transfer) leaves
+        // half-finished UTF-8 sequences that MySQL rejects on insert. Drop them
+        // here so every downstream string is valid UTF-8; bin/diag.php reports
+        // where the damage is.
+        if (!mb_check_encoding($s, 'UTF-8')) {
+            $s = mb_convert_encoding($s, 'UTF-8', 'UTF-8');
+        }
         $s = str_replace(["\r\n", "\r", "\0"], ["\n", "\n", ''], $s);
         $s = preg_replace('/([ก-ฮ][ัิีึืุู]?[่้๊๋]?)[ \t]+า/u', '$1ำ', $s) ?? $s;
         $s = str_replace(['ุา', 'ูา'], ['่า', '้า'], $s);
@@ -468,7 +475,10 @@ final class ManualParser
     private function cleanTitle(string $t): string
     {
         $t = preg_replace('/\s*\(.*?ต่อ.*?\)\s*$/u', '', $t) ?? $t;
-        $t = trim($t, " \t.-–—:");
+        // Character-wise, not byte-wise: trim()'s list is bytes, and – / — share
+        // their trailing bytes (0x93 / 0x94) with Thai ณ and ด, so a byte trim
+        // eats the last byte of a title ending in those letters.
+        $t = preg_replace('/^[\s\.\-–—:]+|[\s\.\-–—:]+$/u', '', $t) ?? $t;
         return trim(preg_replace('/\s{2,}/u', ' ', $t) ?? $t);
     }
 
